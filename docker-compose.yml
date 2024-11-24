@@ -1,0 +1,37 @@
+services:
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - backend
+    networks:
+      - conection
+    ports:
+      - "8000:80"
+  backend:
+    image: php:8.2.25-cli-alpine3.20
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    container_name: backend
+    depends_on:
+      - sql
+    networks:
+      - conection
+    ports:
+      - "8010:80"
+  sql:
+    image: mariadb:11.6.1-rc
+    container_name: sql
+    restart: always
+    networks:
+      - conection
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+networks:
+  conection:
+    driver: bridge
